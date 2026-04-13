@@ -1,5 +1,10 @@
 from pathlib import Path
 import json
+import random
+import time
+import matplotlib.pyplot as plt
+
+from generators import unordered_sequence, ordered_sequence
 
 
 def read_data(file_name, field):
@@ -20,18 +25,19 @@ def read_data(file_name, field):
     with open(file_name, "r") as file:
         data = json.load(file)
     keys = ["unordered_numbers", "ordered_numbers", "dna_sequence"]
-    for key in data:
-        if key != field:
-            return None
-        else:
-            vystup = data.get(field)
-            return vystup
+
+    if field not in keys:
+        return None
+    else:
+        vystup = data.get(field)
+        return vystup
 
     # get current working directory path
 
     cwd_path = Path.cwd()
 
     file_path = cwd_path / file_name
+
 
 def linear_search(sekvence, hledane_cislo):
     slovnik = {}
@@ -45,12 +51,50 @@ def linear_search(sekvence, hledane_cislo):
     slovnik["count"] = count
     return slovnik
 
+
+def binary_search(seznam_cislo, hledane_cislo):
+    left = 0
+    right = len(seznam_cislo) -1
+
+    while left <= right:
+
+        middle = (left + right)// 2
+
+        if seznam_cislo[middle] == hledane_cislo:
+            return middle
+        elif seznam_cislo[middle] < hledane_cislo:
+            left = middle+1
+        else:
+            right = middle -1
+    return None
+
+
+
 def main():
     sequential_data = read_data("sequential.json", "unordered_numbers")
     print(sequential_data)
-    print(linear_search([1, 2, 3, 4], 2))
-    pass
+    print(linear_search(sequential_data, 3))
+    seznam = read_data("sequential.json", "ordered_numbers")
+    print(seznam)
+    print(binary_search(seznam, 2))
 
+
+"""
+def main():
+    velikosti = [100, 500, 1000, 5000, 10000]
+    sekvencni_cas = []
+    binarni_cas = []
+
+    for vlastnost in vlastnosti:
+        neserazeny = unordered_sequence(max_len=100)
+        serazeny = ordered_sequence(max_len = 100)
+
+        hledana = serazeny(len(serazeny)//2)
+        start = time.perf_counter()
+        linear_search(neserazeny, hledana)
+        end = time.perf_counter()
+        sekvencni_cas.append(end-start)
+"""
 
 if __name__ == "__main__":
     main()
